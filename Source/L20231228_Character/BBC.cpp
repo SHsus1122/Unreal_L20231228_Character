@@ -4,6 +4,8 @@
 #include "BBC.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 ABBC::ABBC()
@@ -17,6 +19,10 @@ ABBC::ABBC()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
+	// 캐릭터 초기 위치값 지정
+	GetMesh()->SetRelativeLocation(FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+	// 캐릭터 초기 회전값(Pitch, Yaw, Roll)
+	GetMesh()->SetRelativeRotation(FRotator(0, -90.0f, 0));
 }
 
 // Called when the game starts or when spawned
