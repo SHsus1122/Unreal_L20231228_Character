@@ -37,6 +37,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
+	// 입력키(InputAciton) 설정
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> IA_Jump;
 

@@ -14,9 +14,9 @@ void UBBAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	ACharacter* MyCharacter = Cast<ACharacter>(TryGetPawnOwner());
 	if (IsValid(MyCharacter))
 	{
-		// Velocity 는 방향을 포함한 속도이며, 스칼라는 속도만 가지고 있습니다.
-		// 그래서 아래처럼 해서 속도와 방향을 구하도록 해줍니다.
-		// Size2D 로 하면 Z 축을 제외하고 속도를 계산합니다.
+		// Velocity 는 방향을 포함한 속도이며, Scalar 는 크기만을 가지고 있습니다.
+		// Velocity 와 비교해서 설명하자면 Scalar 방식으로 가져오면 방향성을 못 가져옵니다.
+		// 그래서 아래처럼 해서 속도와 방향을 구하도록 해줍니다. 즉, Size2D 로 하면 Z 축을 제외하고 속도를 계산합니다.
 		Speed = MyCharacter->GetCharacterMovement()->Velocity.Size2D();
 	}
 }
