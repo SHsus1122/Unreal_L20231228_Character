@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "EnhancedInputComponent.h"
+#include "kismet/KismetMathLibrary.h"
 
 // Sets default values
 ABBC::ABBC()
@@ -44,5 +46,39 @@ void ABBC::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	UEnhancedInputComponent* UEIC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (UEIC)
+	{
+		// 상속받은 ACharacter 에 Jump 관련한 함수는 이미 있기 때문에 ABBC::Jump 함수를 만들지 않아도 됩니다.
+		UEIC->BindAction(IA_Jump, ETriggerEvent::Started, this, &ABBC::Jump);
+		UEIC->BindAction(IA_Jump, ETriggerEvent::Completed, this, &ABBC::StopJumping);
+
+		UEIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ABBC::Move);
+		UEIC->BindAction(IA_Look, ETriggerEvent::Triggered, this, &ABBC::Look);
+
+	}
+}
+
+void ABBC::Move(const FInputActionValue& Value)
+{
+	FVector2d Dir = Value.Get<FVector2D>();
+
+	// 캐릭터 기준으로 방향 구하기
+	FRotator CameraRotation = GetControlRotation();
+	FRotator DirectionRotation = FRotator(0, CameraRotation.Yaw, 0);
+
+	FVector ForwardVector = UKismetMathLibrary::GetForwardVector(DirectionRotation);
+	FVector RightVector = UKismetMathLibrary::GetRightVector(DirectionRotation);
+
+	AddMovementInput(ForwardVector, Dir.Y);
+	AddMovementInput(RightVector, Dir.X);
+}
+
+void ABBC::Look(const FInputActionValue& Value)
+{
+	FVector2d Rotation = Value.Get<FVector2D>();
+
+	AddControllerYawInput(Rotation.X);
+	AddControllerPitchInput(Rotation.Y);
 }
 
